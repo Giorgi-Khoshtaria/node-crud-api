@@ -10,34 +10,26 @@ let users: User[] = [];
 
 export const getUsers = () => users;
 
-export const getUser = (id: string) => {
+export const getUser = (id: string): User | undefined => {
   return users.find((user) => user.id === id);
 };
 
-export const createUser = (
-  username: string,
-  age: number,
-  hobbies: string[]
-) => {
-  const newUser = { id: uuidv4(), username, age, hobbies };
+export const createUser = (userData: Omit<User, "id">) => {
+  const newUser: User = { id: uuidv4(), ...userData };
   users.push(newUser);
   return newUser;
 };
-export const updateUser = (
-  id: string,
-  username: string,
-  age: number,
-  hobbies: string[]
-) => {
-  const user = getUser(id);
-  if (!user) return null;
-  user.username = username;
-  user.age = age;
-  user.hobbies = hobbies;
-  return user;
-};
-export const deleteUser = (id: string) => {
+
+export const updateUser = (id: string, updates: Partial<User>) => {
   const index = users.findIndex((user) => user.id === id);
   if (index === -1) return null;
-  return users.splice(index, 1);
+  users[index] = { ...users[index], ...updates };
+  return users[index];
+};
+
+export const deleteUser = (id: string) => {
+  const index = users.findIndex((user) => user.id === id);
+  if (index === -1) return false;
+  users.splice(index, 1);
+  return true;
 };
